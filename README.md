@@ -1,2 +1,28 @@
-# AITO-Surge
-Surge module for passive AITO Home Assistant authorization capture
+# AITO 授权采集 — Surge Mac 模块
+
+这个非官方模块被动读取经过 Surge 的 AITO 授权及续期流量，协助整理 Home Assistant 集成需要的授权字段。它不会主动登录、替换客户端会话或发起车辆查询与控制。
+
+## 安装
+
+在 Surge Mac 的模块页面选择添加模块，粘贴以下地址：
+
+```text
+https://raw.githubusercontent.com/VectorZhao/AITO-Surge/main/AITO-HA.sgmodule
+```
+
+模块会自动加载同仓库的 `aito.js`，不需要另行填写脚本地址。首次使用前，Surge 及目标 App 必须能正常处理匹配域名的 HTTPS 流量；请勿绕过 App 的证书检查。
+
+## 使用
+
+1. 启用 **AITO HA 授权采集**，自行正常使用 AITO App。模块不限定设备，符合 Surge 现有解密设置的匹配流量均可能被处理。尽量避免多个账号同时产生相关流量。
+2. 收到候选通知后，在 Mac 菜单栏打开 Surge 的 **Panels → AITO 授权**，点击面板的刷新按钮暂停采集；等待至少 15 秒，再次点击刷新进行校验。
+3. 点击系统通知并确认复制，再到 HA 的 AITO 集成选择 **重新配置 → 粘贴授权 JSON**。粘贴提交后关闭 Surge 模块。
+4. 下次需要采集时，在 **AITO 新一轮** 面板点击刷新；如有上一轮数据，再于 30 秒内点击一次确认清除。确认完成导入后再清除。
+
+出现错误或相关请求迟迟未出现时，模块会提示。普通使用 App 不一定马上产生所有字段；完整采集依赖相应请求和响应实际发生。模块尚未经过真实账号的完整端到端验证，复制成功也不保证令牌长期有效；HA 会再次核对账号并在后续联网时验证会话。
+
+模块只在本机 Surge 持久存储中保存采集字段，不在面板正文或普通日志显示凭据。Surge 的脚本存储不提供跨脚本事务；极端并发可能无法识别所有覆盖。复制、通知和网络解密受 Surge 版本及系统权限影响。
+
+## 验证
+
+仓库中的合成测试可使用 `node test_aito.js` 运行，不访问账号或车辆。模块针对 Surge Mac；其他平台尚未验证。
